@@ -1,24 +1,18 @@
-# Import Libararies
+# Libraries for 
 import pickle
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split,RandomizedSearchCV
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPRegressor
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error,r2_score
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
 from statsmodels.stats.outliers_influence import variance_inflation_factor
-import numpy as np
-from sklearn.metrics import r2_score
-from sklearn.model_selection import RandomizedSearchCV
-from sklearn.tree import plot_tree
+from sklearn.feature_selection import mutual_info_regression
 import seaborn as sn
 import warnings
-from scipy import stats
 from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.models import Sequential
 warnings.filterwarnings('ignore')
 %matplotlib inline
 
@@ -290,9 +284,7 @@ plt.grid(False)
 plt.show()
 
 
-
-
-<!-- Simple Web App -->
+<!-- Simple Web App Index.html-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -300,82 +292,105 @@ plt.show()
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
-    <title>Body Fat Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <title>Prediction Result</title>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Body Fat Estimator</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('About') }}">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('Contact') }}">Contact Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('result') }}">Results</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Main Form Container -->
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">Body Fat Estimation</h2>
-        <form action="/predict" method="POST" class="p-3 bg-white rounded shadow-sm">
-            
-        
-<!-- Gender Selection -->
-        <div class="form-group">
-            <label>Gender:</label><br>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
-                <label class="form-check-label" for="male">Male</label>
-            </div>
-
-          <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="gender" id="female" value="female" required>
-                <label class="form-check-label" for="female">Female</label>
-            </div>
-            
-            <div class="form-group">
-                <label for="Chest">Chest:</label>
-                <input type="number" step="any" name="Chest" required class="form-control">
-            </div>
-            
-            <div class="form-group">
-                <label for="Hip">Hip:</label>
-                <input type="number" step="any" name="Hip" required class="form-control">
-            </div>
-
-            <div class="form-group">
-                <label for="Weight">Weight (kg):</label>
-                <input type="number" name="Weight" step="any" required class="form-control">
-            </div>
-
-            <div class="form-group">
-                <label for="Abdomen">Abdomen:</label>
-                <input type="number" step="any" name="Abdomen" required class="form-control">
-            </div>
-
-            <div class="form-group">
-                <label for="Density">Density:</label>
-                <input type="number" step="any" name="Density" required class="form-control">
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">Predict Body Fat</button>
-        </form>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Body Fat Estimator</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('About') }}">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('Contact') }}">Contact Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('result') }}">Results</a>
+            </li>
+        </ul>
     </div>
+</nav>
 
+
+    <h2>Body Fat Prediction Result</h2>
+    <p>Your predicted body fat percentage is: <strong>{{body_fat_prediction|abs|round(2)}}</strong>%</p>
+    <h3> women > 30% are obese</h3>
+    <h3> men > 25% are obese</h3>
+    <br>
+    <h3><b>Health Suggestion for Obese People</h3></b>
+    <br>
+    <h3>
+    Eat a balanced calorie-controlled diet as recommended by a GP or weight loss management health professional (such as a dietitian) </h3>
+    <br>
+    <h3>Take up activities such as fast walking, jogging, swimming or tennis for 150 to 300 minutes (2.5 to 5 hours) a week </h3>
+    
+    <a href="{{url_for('index') }}">Go back</a>
+    <!-- Include Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+<!-- result.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <title>Prediction Result</title>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Body Fat Estimator</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('About') }}">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('Contact') }}">Contact Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('result') }}">Results</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+    <h2>Body Fat Prediction Result</h2>
+    <p>Your predicted body fat percentage is: <strong>{{body_fat_prediction|abs|round(2)}}</strong>%</p>
+    <h3> women > 30% are obese</h3>
+    <h3> men > 25% are obese</h3>
+    <br>
+    <h3><b>Health Suggestion for Obese People</h3></b>
+    <br>
+    <h3>
+    Eat a balanced calorie-controlled diet as recommended by a GP or weight loss management health professional (such as a dietitian) </h3>
+    <br>
+    <h3>Take up activities such as fast walking, jogging, swimming or tennis for 150 to 300 minutes (2.5 to 5 hours) a week </h3>
+    
+    <a href="{{url_for('index') }}">Go back</a>
     <!-- Include Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
@@ -429,6 +444,104 @@ def predict():
 
     # Render result.html with prediction
     return render_template('result.html', body_fat_prediction =float(hybrid_prediction[0]))
+
+
+/* General styling Style1css*/
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    background-color: #f4f4f4; 
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #4CAF50;
+}
+
+.navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Navbar Links */
+.navbar .nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.navbar .nav-links a:hover {
+    background-color: #3e8e41;
+}
+
+/* Toggle button styling for small screens */
+.navbar-toggle {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 30px;
+    border: none;
+    cursor: pointer;
+    display: none;
+    padding: 5px;
+}
+
+.navbar-toggle:focus {
+    outline: none;
+}
+
+/* Main Form Container */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Element Styling */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.form-control {
+    margin-bottom: 15px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background-color: #343a40;
+    font-weight: bold;
+}
+
+/* Responsive styling for navbar on small screens */
+@media (max-width: 768px) {
+    .navbar .nav-links {
+        display: none;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .navbar-toggle {
+        display: block;
+        margin-left: auto;
+    }
+
+    .navbar .nav-links.active {
+        display: block;
+    }
+}
 
 
 # Home route to render result form
