@@ -69,6 +69,7 @@ X
 y = data_cl["BodyFat"]
 y
 
+# Extra Tree Regressor
 def ExtraTreeRegressor():
     
     # instantiate ExtrareeRegressor
@@ -92,6 +93,7 @@ print(plot_data)
 
 plot_data.plot(kind="barh", color="green")
 
+# Variance Inflation Factor.
 def VIF():
     temp = data_cl[list(data_cl.columns)]
     info = pd.DataFrame()
@@ -161,7 +163,7 @@ mlp_grid_search = RandomizedSearchCV(MLPRegressor(), mlp_param_grid, cv=5, n_ite
 mlp_grid_search.fit(X_train, y_train)
 best_mlp = mlp_grid_search.best_estimator_
 
-# COmbined Prediction using Weighted Averaging For Hybrid Model.
+# Combined Prediction using Weighted Averaging For Hybrid Model.
 
 # Step 1: Define a function to combine predictions using weighted averaging
 def weighted_predictions(weights, dt_preds, rf_preds, mlp_preds):
